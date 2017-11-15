@@ -1,0 +1,108 @@
+<template>
+<div class="dialog">
+  <div class="mask"></div>
+  <div class="dialog-content">
+    <!-- <h3 class="title">{{ modal.title }}</h3> -->
+    <p class="text">{{ modal.text }}</p>
+    <div class="btn-group">
+      <!-- <div class="btn" @click="cancel">{{ modal.cancelButtonText }}</div> -->
+      <div class="btn" @click="submit">{{ modal.confirmButtonText }}</div>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'dialog',
+  props: {
+    dialogOption: Object
+  },
+  data() {
+    return {
+      resolve: '',
+      reject: '',
+      promise: '', // 保存promise对象
+    }
+  },
+  computed: {
+    modal: function() {
+      let options = this.dialogOption;
+      return {
+        autoClose: options.autoClose,
+        text: options.text,
+        // cancelButtonText: options.cancelButtonText ? options.cancelButtonText : '取消',
+        confirmButtonText: options.confirmButtonText ? options.confirmButtonText : '确定',
+      }
+    }
+
+
+  },
+  methods: {
+    // 确定,将promise断定为完成态
+    submit() {
+      this.resolve('submit');
+    },
+    // 取消,将promise断定为reject状态
+    cancel() {
+      this.reject('cancel');
+    },
+    //显示confirm弹出,并创建promise对象，给父组件调用
+    confirm() {
+      this.promise = new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+      });
+      return this.promise; //返回promise对象,给父级组件调用
+    }
+  }
+}
+</script>
+
+<style>
+.dialog {
+  position: relative;
+}
+.dialog-content {
+    position: fixed;
+    box-sizing: border-box;
+    padding: 15px 0 0 0;
+    width: 70%;
+    min-height: 80px;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    border-radius: 2px;
+    background: #fff;
+    z-index: 50002;
+    text-align: center;
+}
+.dialog-content  .text {
+    font-size: 14px;
+    line-height: 30px;
+    color: #555;
+}
+.dialog-content   .btn-group {
+      display: flex;
+      position: absolute;
+      /*right: 0;*/
+      bottom: 0px;
+      width: 100%;
+      line-height: 30px;
+      border-top:1px solid #E3E5E8;
+  }
+.btn {
+  /*padding: 10px 20px;*/
+  font-size: 14px;
+  width: 100%;
+}
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 50001;
+    background: rgba(0,0,0,.5);
+}
+</style>
